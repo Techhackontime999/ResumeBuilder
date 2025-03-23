@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ResumeRocket Builder - Launch Your Career</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: clamp(60px, 10vw, 80px) 0 0;
+            background: linear-gradient(135deg, #0D1B2A 0%, #1B263B 100%);
+            font-family: 'Poppins', sans-serif;
+            color: #E0E1DD;
+            overflow-x: hidden;
+            transition: background 0.5s, color 0.5s;
+        }
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+            padding: clamp(8px, 1.5vw, 15px) clamp(10px, 2vw, 20px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 200;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            transition: background 0.5s;
+        }
+        .navbar-brand {
+            margin: 0;
+            font-size: clamp(16px, 3.5vw, 26px);
+            font-weight: 700;
+            color: #778DA9;
+            transition: color 0.5s;
+        }
+        .navbar-menu {
+            display: flex;
+            align-items: center;
+            gap: clamp(8px, 1.5vw, 20px);
+            transition: all 0.3s ease;
+        }
+        .navbar-menu button, .navbar-menu select {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: #E0E1DD;
+            font-size: clamp(10px, 2vw, 16px);
+            padding: clamp(6px, 1vw, 10px) clamp(10px, 1.5vw, 15px);
+            border-radius: 25px;
+            cursor: pointer;
+            transition: background 0.3s, color 0.3s, transform 0.2s;
+            white-space: nowrap;
+            min-width: clamp(60px, 10vw, 100px);
+        }
+        .navbar-menu button:hover, .navbar-menu select:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+        .hamburger {
+            display: none;
+            font-size: clamp(20px, 4.5vw, 28px);
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: #E0E1DD;
+            cursor: pointer;
+            padding: clamp(8px, 1.5vw, 12px);
+            border-radius: 50%;
+            width: clamp(40px, 8vw, 50px);
+            height: clamp(40px, 8vw, 50px);
+            transition: background 0.3s, transform 0.2s;
+        }
+        .hamburger:hover, .hamburger.active {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/jpeg;base64,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') repeat;
+            opacity: 0.5;
+            animation: twinkle 5s infinite;
+        }
+        .container {
+            position: relative;
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: clamp(20px, 4vw, 30px);
+            display: flex;
+            flex-direction: row;
+            gap: clamp(20px, 3vw, 30px);
+            z-index: 1;
+        }
+        .builder, .preview {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.08);
+            padding: clamp(15px, 3vw, 25px);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+            transition: background 0.5s;
+        }
+        .preview { background: #1B263B; }
+        h1 {
+            color: #778DA9;
+            text-shadow: 0 0 10px #778DA9;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: clamp(20px, 5vw, 32px);
+            transition: color 0.5s;
+        }
+        .components {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(clamp(100px, 20vw, 130px), 1fr));
+            gap: clamp(10px, 2vw, 15px);
+            margin-top: 20px;
+        }
+        .component {
+            background: #415A77;
+            padding: clamp(8px, 2vw, 12px);
+            border-radius: 12px;
+            text-align: center;
+            cursor: grab;
+            transition: transform 0.3s, background 0.5s, box-shadow 0.3s;
+        }
+        .component:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+        #dropZone {
+            min-height: 200px;
+            padding: clamp(15px, 3vw, 20px);
+            border: 2px dashed #778DA9;
+            border-radius: 15px;
+            margin-top: clamp(15px, 3vw, 25px);
+            background: rgba(255, 255, 255, 0.05);
+            transition: border 0.5s, background 0.5s;
+        }
+        .resume-section {
+            background: rgba(255, 255, 255, 0.1);
+            padding: clamp(15px, 3vw, 20px);
+            margin-bottom: 15px;
+            position: relative;
+            animation: fadeIn 0.5s;
+            transition: background 0.5s;
+        }
+        .square { border-radius: 10px; }
+        .rounded { border-radius: 25px; }
+        .resume-section h3 {
+            margin: 0 0 10px;
+            transition: color 0.5s;
+            font-size: clamp(16px, 4vw, 20px);
+        }
+        .remove-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #E63946;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .remove-btn:hover {
+            background: #F94144;
+        }
+        .form-group {
+            margin-bottom: clamp(15px, 3vw, 20px);
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            transition: color 0.5s;
+            font-size: clamp(12px, 3vw, 14px);
+        }
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: clamp(8px, 2vw, 12px);
+            border: none;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            transition: background 0.5s, color 0.5s;
+            font-size: clamp(12px, 3vw, 14px);
+        }
+        .custom-component-form {
+            margin-top: clamp(15px, 3vw, 25px);
+            padding: clamp(15px, 3vw, 20px);
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        .custom-component-form button {
+            background: #778DA9;
+            color: #0D1B2A;
+            padding: clamp(8px, 2vw, 10px) clamp(15px, 3vw, 20px);
+            border-radius: 25px;
+            transition: background 0.3s, transform 0.2s;
+            width: 100%;
+        }
+        .custom-component-form button:hover {
+            background: #E0E1DD;
+            transform: translateY(-2px);
+        }
+        .progress {
+            margin-top: clamp(15px, 3vw, 25px);
+            text-align: center;
+            transition: color 0.5s;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            overflow: hidden;
+            transition: background 0.5s;
+        }
+        .progress-fill {
+            height: 100%;
+            background: #778DA9;
+            width: 0;
+            transition: width 0.5s, background 0.5s;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            animation: modalFadeIn 0.3s;
+        }
+        .modal-content {
+            background: #1B263B;
+            padding: clamp(20px, 4vw, 25px);
+            border-radius: 20px;
+            text-align: center;
+            max-width: 450px;
+            width: 90%;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+            transition: background 0.5s;
+        }
+        .modal-content h2 {
+            transition: color 0.5s;
+            font-size: clamp(18px, 5vw, 24px);
+        }
+        .suggestion {
+            display: inline-block;
+            width: clamp(40px, 10vw, 60px);
+            height: clamp(40px, 10vw, 60px);
+            margin: clamp(10px, 2vw, 15px);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        .suggestion:hover {
+            transform: scale(1.1);
+        }
+        .export-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .export-options button {
+            background: #778DA9;
+            color: #0D1B2A;
+            padding: 10px;
+            border-radius: 25px;
+            transition: background 0.3s, transform 0.2s;
+        }
+        .export-options button:hover {
+            background: #E0E1DD;
+            transform: translateY(-2px);
+        }
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .login-form input {
+            padding: 10px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            color: #E0E1DD;
+            border: none;
+        }
+        .login-form button {
+            background: #778DA9;
+            color: #0D1B2A;
+            padding: 10px;
+            border-radius: 25px;
+            transition: background 0.3s, transform 0.2s;
+        }
+        .login-form button:hover {
+            background: #E0E1DD;
+            transform: translateY(-2px);
+        }
+        .login-form a {
+            color: #778DA9;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        .login-form a:hover {
+            text-decoration: underline;
+        }
+        #profilePhoto {
+            display: block;
+            margin: 0 auto 20px;
+            width: clamp(100px, 20vw, 150px);
+            height: clamp(100px, 20vw, 150px);
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #778DA9;
+        }
+        /* Resume Styles */
+        .modern .resume-section {
+            border-left: 4px solid #778DA9;
+            padding-left: clamp(15px, 3vw, 25px);
+            font-family: 'Roboto', sans-serif;
+        }
+        .modern h3 { font-weight: 500; }
+        .classic .resume-section {
+            border-bottom: 2px solid #778DA9;
+            padding-bottom: clamp(10px, 2vw, 15px);
+            font-family: 'Times New Roman', serif;
+        }
+        .classic h3 { font-weight: bold; }
+        .creative .resume-section {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            padding: clamp(15px, 3vw, 25px);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            font-family: 'Montserrat', sans-serif;
+        }
+        .creative h3 { font-weight: 600; text-transform: uppercase; }
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 0.2; }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes modalFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slideIn {
+            from { transform: translateY(-100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        @media (max-width: 768px) {
+            .container { flex-direction: column; }
+            .navbar {
+                flex-wrap: wrap;
+                padding: clamp(6px, 1.2vw, 10px) clamp(8px, 1.5vw, 15px);
+            }
+            .navbar-menu {
+                display: none;
+                flex-direction: column;
+                width: 100%;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                background: rgba(27, 38, 59, 0.95);
+                padding: clamp(15px, 2vw, 20px);
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+                gap: clamp(10px, 1.5vw, 15px);
+                animation: slideIn 0.3s ease-out;
+            }
+            .navbar-menu.active {
+                display: flex;
+            }
+            .navbar-menu button, .navbar-menu select {
+                width: 100%;
+                margin: 0;
+                padding: clamp(10px, 2vw, 14px) clamp(12px, 2.5vw, 16px);
+                font-size: clamp(12px, 2.5vw, 16px);
+                min-width: unset;
+                border-radius: 15px;
+            }
+            .hamburger {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+            .components { grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); }
+        }
+        @media (max-width: 480px) {
+            body { padding-top: clamp(50px, 8vw, 60px); }
+            .navbar-brand { font-size: clamp(14px, 3vw, 18px); }
+            .navbar-menu {
+                padding: clamp(10px, 1.5vw, 15px);
+                gap: clamp(8px, 1.2vw, 12px);
+            }
+            .navbar-menu button, .navbar-menu select {
+                font-size: clamp(11px, 2.2vw, 14px);
+                padding: clamp(8px, 1.5vw, 12px) clamp(10px, 2vw, 14px);
+            }
+            .hamburger {
+                font-size: clamp(18px, 4vw, 24px);
+                width: clamp(35px, 7vw, 45px);
+                height: clamp(35px, 7vw, 45px);
+                padding: clamp(6px, 1.2vw, 10px);
+            }
+            h1 { font-size: clamp(18px, 4vw, 20px); }
+            .resume-section h3 { font-size: clamp(14px, 3.5vw, 16px); }
+            .form-group label, .form-group input, .form-group textarea { font-size: clamp(10px, 2.5vw, 12px); }
+            .custom-component-form button { font-size: clamp(12px, 3vw, 14px); }
+            #profilePhoto { width: clamp(80px, 15vw, 100px); height: clamp(80px, 15vw, 100px); }
+        }
+        footer{
+        margin-top:20px;
+        width:100%;
+        height:300px;
+             left: 0;
+         
+            background: rgba(255, 255, 255, 0.05);
+           
+            display: flex;
+            justify-content: space-evenly;
+            align-items: center;
+            z-index: 200;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            transition: background 0.5s;
+        }
+        .ul{
+        
+        font:bold;
+        }
+         .li{
+        padding-top:5px;
+        font:bold;
+                    gap: clamp(8px, 1.5vw, 20px);
+            transition: all 0.3s ease;
+             font-family: 'Poppins', sans-serif;
+            color: #E0E1DD;
+            font-size:1.5rem;
+        }
+        .copyright{
+        backgroud-color:black;
+        color:white;
+        display:flex;
+        justify-content:center;
+        align-item:center;
+        padding-y:3px;
+        height:20px;
+        width:100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <h2 class="navbar-brand">ResumeRocket Builder</h2>
+        <div class="navbar-menu">
+            <button onclick="alert('Welcome to ResumeRocket Builder!')">Home</button>
+            <button onclick="openColorModal()">Choose Color</button>
+            <select id="resumeStyle" onchange="changeResumeStyle(this.value)">
+                <option value="modern">Modern</option>
+                <option value="classic">Classic</option>
+                <option value="creative">Creative</option>
+            </select>
+            <select id="geoStyle" onchange="changeGeoStyle(this.value)">
+                <option value="square">Square</option>
+                <option value="rounded">Rounded</option>
+            </select>
+            <button id="exportBtn" onclick="openExportModal()">Export Resume</button>
+            <button onclick="document.getElementById('photoUpload').click()">Upload Photo</button>
+            <input type="file" id="photoUpload" accept="image/*" style="display: none;" onchange="uploadPhoto(event)">
+            <button onclick="openLoginModal()">Login</button>
+        </div>
+        <button class="hamburger" onclick="toggleMenu()">☰</button>
+    </div>
+    <div class="stars"></div>
+    <div class="container">
+        <div class="builder">
+            <h1>Build Your Resume</h1>
+            <p>Drag components or add custom sections below!</p>
+            <div class="components">
+                <div class="component" draggable="true" data-type="about">About Me</div>
+                <div class="component" draggable="true" data-type="skills">Skills</div>
+                <div class="component" draggable="true" data-type="projects">Projects</div>
+                <div class="component" draggable="true" data-type="experience">Experience</div>
+                <div class="component" draggable="true" data-type="education">Education</div>
+                <div class="component" draggable="true" data-type="certifications">Certifications</div>
+                <div class="component" draggable="true" data-type="contact">Contact</div>
+            </div>
+            <div class="custom-component-form">
+                <h3>Add Custom Section</h3>
+                <div class="form-group">
+                    <label>Title</label>
+                    <input type="text" id="customTitle" placeholder="e.g., Hobbies">
+                </div>
+                <div class="form-group">
+                    <label>Content</label>
+                    <textarea id="customContent" placeholder="e.g., Reading, Hiking"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Position</label>
+                    <select id="customPosition">
+                        <option value="top">Top</option>
+                        <option value="bottom">Bottom</option>
+                        <option value="index">Specific Index</option>
+                    </select>
+                    <input type="number" id="customIndex" placeholder="Index (0-based)" style="display: none; margin-top: 8px;">
+                </div>
+                <button onclick="addCustomComponent()">Add Custom Section</button>
+            </div>
+            <div id="dropZone">
+                <p>Drop components here</p>
+            </div>
+            <div class="progress">
+                <p>Progress: <span id="progressText">0%</span></p>
+                <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+            </div>
+        </div>
+        <div class="preview modern square" id="preview">
+            <h1>Your Resume</h1>
+            <img id="profilePhoto" style="display: none;">
+            <div id="resumeContent"></div>
+        </div>
+    </div>
+    <div class="modal" id="colorModal">
+        <div class="modal-content">
+            <h2>Customize Your Theme</h2>
+            <p>Background Color:</p>
+            <input type="color" id="customBgColor" value="#778DA9" onchange="applyCustomColors()">
+            <p>Text Color:</p>
+            <input type="color" id="customTextColor" value="#E0E1DD" onchange="applyCustomColors()">
+            <p>Heading Color:</p>
+            <input type="color" id="customHeadingColor" value="#778DA9" onchange="applyCustomColors()">
+            <p>Or try these professional suggestions:</p>
+            <div id="suggestions"></div>
+            <button onclick="closeColorModal()">Close</button>
+        </div>
+    </div>
+    <div class="modal" id="exportModal">
+        <div class="modal-content">
+            <h2>Export Your Resume</h2>
+            <div class="export-options">
+                <button onclick="exportAsPDF()">Export as PDF</button>
+                <button onclick="exportAsWebsite()">Export as Website</button>
+            </div>
+            <button onclick="closeExportModal()" style="margin-top: 20px;">Close</button>
+        </div>
+    </div>
+    <div class="modal" id="loginModal">
+        <div class="modal-content">
+            <h2>Login</h2>
+            <div class="login-form">
+                <input type="text" id="username" placeholder="Username">
+                <button onclick="login()">Login</button>
+                <a href="#" onclick="alert('Sign up functionality not implemented yet.')">Not have an account? Sign up</a>
+            </div>
+            <button onclick="closeLoginModal()" style="margin-top: 20px;">Close</button>
+        </div>
+    </div>
+
+    <script>
+        const components = document.querySelectorAll('.component');
+        const dropZone = document.getElementById('dropZone');
+        const resumeContent = document.getElementById('resumeContent');
+        const preview = document.getElementById('preview');
+        const progressFill = document.getElementById('progressFill');
+        const progressText = document.getElementById('progressText');
+        const colorModal = document.getElementById('colorModal');
+        const exportModal = document.getElementById('exportModal');
+        const loginModal = document.getElementById('loginModal');
+        const customBgColor = document.getElementById('customBgColor');
+        const customTextColor = document.getElementById('customTextColor');
+        const customHeadingColor = document.getElementById('customHeadingColor');
+        const suggestionsDiv = document.getElementById('suggestions');
+        const customPosition = document.getElementById('customPosition');
+        const customIndex = document.getElementById('customIndex');
+        const profilePhoto = document.getElementById('profilePhoto');
+        const hamburger = document.querySelector('.hamburger');
+        let resumeData = [];
+        let sectionCount = 0;
+        const totalComponents = 8;
+        let loggedInUser = null;
+        let photoDataUrl = null;
+
+        const professionalColors = [
+            '#2A9D8F', '#E76F51', '#264653', '#F4A261', '#457B9D',
+            '#9B59B6', '#E63946', '#F1C40F', '#3498DB', '#27AE60'
+        ];
+
+        components.forEach(component => {
+            component.addEventListener('dragstart', (e) => {
+                e.dataTransfer.setData('type', component.getAttribute('data-type'));
+            });
+        });
+
+        dropZone.addEventListener('dragover', (e) => e.preventDefault());
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            const type = e.dataTransfer.getData('type');
+            if (!resumeData.some(item => item.type === type)) {
+                addSection(type, 'bottom');
+                sectionCount++;
+                updateProgress();
+            }
+        });
+
+        customPosition.addEventListener('change', (e) => {
+            customIndex.style.display = e.target.value === 'index' ? 'block' : 'none';
+        });
+
+        function uploadPhoto(event) {
+            const file = event.target.files[0];
+            if (file && file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    photoDataUrl = e.target.result;
+                    profilePhoto.src = photoDataUrl;
+                    profilePhoto.style.display = 'block';
+                    renderPreview();
+                };
+                reader.readAsDataURL(file);
+            } else {
+                alert('Please upload a valid image file.');
+            }
+        }
+
+        function addSection(type, position, customTitle = '', customContent = '') {
+            const id = Date.now().toString();
+            let html = '';
+            const section = { id, type, customTitle, customContent };
+            switch (type) {
+                case 'about':
+                    html = `
+                        <div class="resume-section" data-id="${id}">
+                            <h3>About Me</h3>
+                            <div class="form-group">
+                                <label>Name</label>
+                                <input type="text" placeholder="Your Name" oninput="updatePreview('${id}', 'name', this.value)">
+                            </div>
+                            <div class="form-group">
+                                <label>Bio</label>
+                                <textarea placeholder="A short bio..." oninput="updatePreview('${id}', 'bio', this.value)"></textarea>
+                            </div>
+                            <button class="remove-btn" onclick="removeSection('${id}')">X</button>
+                        </div>`;
+                    section.name = '';
+                    section.bio = '';
+                    break;
+                case 'skills':
+                    html = `
+                        <div class="resume-section" data-id="${id}">
+                            <h3>Skills</h3>
+                            <div class="form-group">
+                                <label>Skill List (comma-separated)</label>
+                                <input type="text" placeholder="e.g., JavaScript, Python" oninput="updatePreview('${id}', 'list', this.value)">
+                            </div>
+                            <button class="remove-btn" onclick="removeSection('${id}')">X</button>
+                        </div>`;
+                    section.list = '';
+                    break;
+                case 'projects':
+                    html = `
+                        <div class="resume-section" data-id="${id}">
+                            <h3>Projects</h3>
+                            <div class="form-group">
+                                <label>Project Name</label>
+                                <input type="text" placeholder="Project Title" oninput="updatePreview('${id}', 'name', this.value)">
+                            </div>
+                            <div class="form-group">
+                                <label>Description</label>
+                                <textarea placeholder="What did you build?" oninput="updatePreview('${id}', 'desc', this.value)"></textarea>
+                            </div>
+                            <button class="remove-btn" onclick="removeSection('${id}')">X</button>
+                        </div>`;
+                    section.name = '';
+                    section.desc = '';
+                    break;
+                case 'experience':
+                    html = `
+                        <div class="resume-section" data-id="${id}">
+                            <h3>Work Experience</h3>
+                            <div class="form-group">
+                                <label>Job Title</label>
+                                <input type="text" placeholder="e.g., Software Engineer" oninput="updatePreview('${id}', 'title', this.value)">
+                            </div>
+                            <div class="form-group">
+                                <label>Company & Duration</label>
+                                <input type="text" placeholder="e.g., XYZ Corp, 2020-2023" oninput="updatePreview('${id}', 'company', this.value)">
+                            </div>
+                            <button class="remove-btn" onclick="removeSection('${id}')">X</button>
+                        </div>`;
+                    section.title = '';
+                    section.company = '';
+                    break;
+                case 'education':
+                    html = `
+                        <div class="resume-section" data-id="${id}">
+                            <h3>Education</h3>
+                            <div class="form-group">
+                                <label>Degree</label>
+                                <input type="text" placeholder="e.g., B.Sc. Computer Science" oninput="updatePreview('${id}', 'degree', this.value)">
+                            </div>
+                            <div class="form-group">
+                                <label>Institution & Year</label>
+                                <input type="text" placeholder="e.g., ABC University, 2019" oninput="updatePreview('${id}', 'institution', this.value)">
+                            </div>
+                            <button class="remove-btn" onclick="removeSection('${id}')">X</button>
+                        </div>`;
+                    section.degree = '';
+                    section.institution = '';
+                    break;
+                case 'certifications':
+                    html = `
+                        <div class="resume-section" data-id="${id}">
+                            <h3>Certifications</h3>
+                            <div class="form-group">
+                                <label>Certification Name</label>
+                                <input type="text" placeholder="e.g., AWS Certified Developer" oninput="updatePreview('${id}', 'name', this.value)">
+                            </div>
+                            <div class="form-group">
+                                <label>Issuer</label>
+                                <input type="text" placeholder="e.g., Amazon" oninput="updatePreview('${id}', 'issuer', this.value)">
+                            </div>
+                            <button class="remove-btn" onclick="removeSection('${id}')">X</button>
+                        </div>`;
+                    section.name = '';
+                    section.issuer = '';
+                    break;
+                case 'contact':
+                    html = `
+                        <div class="resume-section" data-id="${id}">
+                            <h3>Contact</h3>
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input type="email" placeholder="your.email@example.com" oninput="updatePreview('${id}', 'email', this.value)">
+                            </div>
+                            <div class="form-group">
+                                <label>Phone</label>
+                                <input type="text" placeholder="+1234567890" oninput="updatePreview('${id}', 'phone', this.value)">
+                            </div>
+                            <button class="remove-btn" onclick="removeSection('${id}')">X</button>
+                        </div>`;
+                    section.email = '';
+                    section.phone = '';
+                    break;
+                case 'custom':
+                    html = `
+                        <div class="resume-section" data-id="${id}">
+                            <h3>${customTitle || 'Custom Section'}</h3>
+                            <div class="form-group">
+                                <label>Content</label>
+                                <textarea placeholder="Enter content..." oninput="updatePreview('${id}', 'content', this.value)">${customContent}</textarea>
+                            </div>
+                            <button class="remove-btn" onclick="removeSection('${id}')">X</button>
+                        </div>`;
+                    section.content = customContent;
+                    break;
+            }
+            if (position === 'top') {
+                dropZone.insertAdjacentHTML('afterbegin', html);
+                resumeData.unshift(section);
+            } else if (position === 'index' && customIndex.value) {
+                const index = Math.min(Math.max(0, parseInt(customIndex.value)), resumeData.length);
+                dropZone.insertBefore(document.createElement('div'), dropZone.children[index]).outerHTML = html;
+                resumeData.splice(index, 0, section);
+            } else {
+                dropZone.insertAdjacentHTML('beforeend', html);
+                resumeData.push(section);
+            }
+            renderPreview();
+        }
+
+        function addCustomComponent() {
+            const title = document.getElementById('customTitle').value;
+            const content = document.getElementById('customContent').value;
+            const position = customPosition.value;
+            if (title && content) {
+                addSection('custom', position, title, content);
+                sectionCount++;
+                updateProgress();
+                document.getElementById('customTitle').value = '';
+                document.getElementById('customContent').value = '';
+            } else {
+                alert('Please enter a title and content for the custom section.');
+            }
+        }
+
+        function removeSection(id) {
+            resumeData = resumeData.filter(section => section.id !== id);
+            document.querySelector(`.resume-section[data-id="${id}"]`).remove();
+            sectionCount--;
+            updateProgress();
+            renderPreview();
+        }
+
+        function updatePreview(id, field, value) {
+            const section = resumeData.find(item => item.id === id);
+            if (section) section[field] = value;
+            renderPreview();
+        }
+
+        function renderPreview() {
+            const style = preview.className.split(' ')[1] || 'modern';
+            const geoStyle = preview.className.split(' ')[2] || 'square';
+            resumeContent.innerHTML = '';
+            if (photoDataUrl) {
+                profilePhoto.src = photoDataUrl;
+                profilePhoto.style.display = 'block';
+            } else {
+                profilePhoto.style.display = 'none';
+            }
+            resumeData.forEach(section => {
+                let html = '';
+                switch (section.type) {
+                    case 'about':
+                        html = `
+                            <div class="resume-section ${geoStyle}">
+                                <h3>${section.name || 'Your Name'}</h3>
+                                <p>${section.bio || 'A short bio about yourself...'}</p>
+                            </div>`;
+                        break;
+                    case 'skills':
+                        html = `
+                            <div class="resume-section ${geoStyle}">
+                                <h3>Skills</h3>
+                                <p>${section.list ? section.list.split(',').map(s => `<span>${s.trim()}</span>`).join(style === 'creative' ? ' • ' : ' ') : 'Add your skills'}</p>
+                            </div>`;
+                        break;
+                    case 'projects':
+                        html = `
+                            <div class="resume-section ${geoStyle}">
+                                <h3>Projects</h3>
+                                <p><strong>${section.name || 'Project Title'}</strong>${style === 'classic' ? '<br>' : ': '}${section.desc || 'Project description'}</p>
+                            </div>`;
+                        break;
+                    case 'experience':
+                        html = `
+                            <div class="resume-section ${geoStyle}">
+                                <h3>Work Experience</h3>
+                                <p><strong>${section.title || 'Job Title'}</strong>${style === 'classic' ? '<br>' : ' - '}${section.company || 'Company & Duration'}</p>
+                            </div>`;
+                        break;
+                    case 'education':
+                        html = `
+                            <div class="resume-section ${geoStyle}">
+                                <h3>Education</h3>
+                                <p><strong>${section.degree || 'Degree'}</strong>${style === 'classic' ? '<br>' : ' - '}${section.institution || 'Institution & Year'}</p>
+                            </div>`;
+                        break;
+                    case 'certifications':
+                        html = `
+                            <div class="resume-section ${geoStyle}">
+                                <h3>Certifications</h3>
+                                <p><strong>${section.name || 'Certification Name'}</strong>${style === 'classic' ? '<br>' : ' - '}${section.issuer || 'Issuer'}</p>
+                            </div>`;
+                        break;
+                    case 'contact':
+                        html = `
+                            <div class="resume-section ${geoStyle}">
+                                <h3>Contact</h3>
+                                <p>Email: ${section.email || 'your.email@example.com'}</p>
+                                <p>Phone: ${section.phone || '+1234567890'}</p>
+                            </div>`;
+                        break;
+                    case 'custom':
+                        html = `
+                            <div class="resume-section ${geoStyle}">
+                                <h3>${section.customTitle}</h3>
+                                <p>${section.content || 'Custom content'}</p>
+                            </div>`;
+                        break;
+                }
+                resumeContent.insertAdjacentHTML('beforeend', html);
+            });
+        }
+
+        function updateProgress() {
+            const progress = (sectionCount / totalComponents) * 100;
+            progressFill.style.width = `${Math.min(progress, 100)}%`;
+            progressText.textContent = `${Math.round(Math.min(progress, 100))}%`;
+        }
+
+        function exportAsPDF() {
+            if (!loggedInUser) {
+                alert('Please login to export your resume.');
+                closeExportModal();
+                openLoginModal();
+                return;
+            }
+            const element = document.getElementById('preview');
+            const opt = {
+                margin: 1,
+                filename: `${loggedInUser}_resume.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+            };
+            html2pdf().set(opt).from(element).save();
+            closeExportModal();
+        }
+
+        function exportAsWebsite() {
+            if (!loggedInUser) {
+                alert('Please login to export your resume as a website.');
+                closeExportModal();
+                openLoginModal();
+                return;
+            }
+            const resumeHtml = resumeContent.innerHTML;
+            const bgColor = document.body.style.getPropertyValue('--accent-color') || '#778DA9';
+            const textColor = document.body.style.color || '#E0E1DD';
+            const headingColor = customHeadingColor.value || '#778DA9';
+            const style = preview.className.split(' ')[1] || 'modern';
+            const geoStyle = preview.className.split(' ')[2] || 'square';
+            const photoHtml = photoDataUrl ? `<img src="${photoDataUrl}" style="display: block; margin: 0 auto 20px; width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 2px solid ${bgColor};"/>` : '';
+            const websiteContent = `
+                <html>
+                    <head>
+                        <style>
+                            body { background: ${darkenColor(bgColor, 0.9)}; color: ${textColor}; font-family: ${style === 'modern' ? 'Roboto' : style === 'classic' ? 'Times New Roman' : 'Montserrat'}, sans-serif; padding: 20px; }
+                            h1 { color: ${headingColor}; text-align: center; }
+                            h3 { color: ${headingColor}; }
+                            .resume-section { 
+                                background: rgba(255, 255, 255, 0.1); 
+                                padding: ${style === 'creative' ? '25px' : '20px'}; 
+                                margin-bottom: 15px; 
+                                ${style === 'modern' ? 'border-left: 4px solid ' + bgColor + '; padding-left: 25px;' : ''}
+                                ${style === 'classic' ? 'border-bottom: 2px solid ' + bgColor + '; padding-bottom: 15px;' : ''}
+                                ${style === 'creative' ? 'box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);' : ''}
+                                ${geoStyle === 'square' ? 'border-radius: 10px;' : ''}
+                                ${geoStyle === 'rounded' ? 'border-radius: 25px;' : ''}
+                            }
+                        </style>
+                    </head>
+                    <body><h1>Your Resume</h1>${photoHtml}${resumeHtml}</body>
+                </html>
+            `;
+            const githubUrl = `https://${loggedInUser}.github.io`;
+            alert(`Your resume has been hosted at ${githubUrl} (simulated). In a real implementation, this would push to GitHub Pages.`);
+            const blob = new Blob([websiteContent], { type: 'text/html' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'index.html';
+            link.click();
+            closeExportModal();
+        }
+
+        function openExportModal() {
+            exportModal.style.display = 'flex';
+        }
+
+        function closeExportModal() {
+            exportModal.style.display = 'none';
+        }
+
+        function openLoginModal() {
+            loginModal.style.display = 'flex';
+        }
+
+        function closeLoginModal() {
+            loginModal.style.display = 'none';
+        }
+
+        function login() {
+            const username = document.getElementById('username').value;
+            if (username) {
+                loggedInUser = username;
+                alert(`Logged in as ${username}`);
+                closeLoginModal();
+            } else {
+                alert('Please enter a username.');
+            }
+        }
+
+        function openColorModal() {
+            colorModal.style.display = 'flex';
+            generateSuggestions();
+        }
+
+        function closeColorModal() {
+            colorModal.style.display = 'none';
+        }
+
+        function generateSuggestions() {
+            suggestionsDiv.innerHTML = '';
+            const shuffledColors = professionalColors.sort(() => 0.5 - Math.random()).slice(0, 3);
+            shuffledColors.forEach(color => {
+                const div = document.createElement('div');
+                div.className = 'suggestion';
+                div.style.backgroundColor = color;
+                div.addEventListener('click', () => {
+                    customBgColor.value = color;
+                    applyCustomColors();
+                });
+                suggestionsDiv.appendChild(div);
+            });
+        }
+
+        function applyCustomColors() {
+            const bgColor = customBgColor.value;
+            const textColor = customTextColor.value || autoTextColor(bgColor);
+            const headingColor = customHeadingColor.value;
+            document.body.style.setProperty('--accent-color', bgColor);
+            document.body.style.background = `linear-gradient(135deg, ${darkenColor(bgColor, 0.7)} 0%, ${darkenColor(bgColor, 0.9)} 100%)`;
+            document.body.style.color = textColor;
+            document.querySelector('.preview').style.background = darkenColor(bgColor, 0.9);
+            document.querySelectorAll('h1, .navbar-brand, .progress').forEach(el => el.style.color = bgColor);
+            document.querySelectorAll('.component').forEach(el => el.style.background = darkenColor(bgColor, 0.8));
+            document.querySelectorAll('button, .navbar-menu select').forEach(el => el.style.background = bgColor);
+            document.querySelectorAll('.remove-btn').forEach(el => el.style.background = '#E63946');
+            document.querySelector('.progress-fill').style.background = bgColor;
+            document.querySelector('#dropZone').style.borderColor = bgColor;
+            document.querySelectorAll('.modal-content').forEach(el => el.style.background = darkenColor(bgColor, 0.9));
+            document.querySelectorAll('.modal-content h2').forEach(el => el.style.color = bgColor);
+            document.querySelectorAll('.form-group input, .form-group textarea, .login-form input').forEach(el => {
+                el.style.background = `rgba(255, 255, 255, ${isLightColor(bgColor) ? '0.3' : '0.2'})`;
+                el.style.color = textColor;
+            });
+            document.querySelectorAll('.form-group label').forEach(el => el.style.color = textColor);
+            document.querySelectorAll('.resume-section h3').forEach(el => el.style.color = headingColor);
+            document.querySelectorAll('.navbar-menu button, .navbar-menu select').forEach(el => el.style.color = textColor);
+            if (profilePhoto) profilePhoto.style.borderColor = bgColor;
+            renderPreview();
+        }
+
+        function darkenColor(color, factor) {
+            const r = parseInt(color.slice(1, 3), 16) * factor;
+            const g = parseInt(color.slice(3, 5), 16) * factor;
+            const b = parseInt(color.slice(5, 7), 16) * factor;
+            return `rgb(${Math.round(r)}, ${Math.round(g)}, ${Math.round(b)})`;
+        }
+
+        function isLightColor(color) {
+            const r = parseInt(color.slice(1, 3), 16);
+            const g = parseInt(color.slice(3, 5), 16);
+            const b = parseInt(color.slice(5, 7), 16);
+            const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+            return brightness > 128;
+        }
+
+        function autoTextColor(bgColor) {
+            return isLightColor(bgColor) ? '#1A1A2E' : '#E0E1DD';
+        }
+
+        function changeResumeStyle(style) {
+            preview.className = `preview ${style} ${document.getElementById('geoStyle').value}`;
+            renderPreview();
+        }
+
+        function changeGeoStyle(geoStyle) {
+            preview.className = `preview ${document.getElementById('resumeStyle').value} ${geoStyle}`;
+            renderPreview();
+        }
+
+        function toggleMenu() {
+            const menu = document.querySelector('.navbar-menu');
+            menu.classList.toggle('active');
+            hamburger.classList.toggle('active');
+            hamburger.textContent = hamburger.classList.contains('active') ? '✕' : '☰';
+        }
+    </script>
+    <footer>
+    <h2>@ResumeRocketBuilder Team</h2>
+    <ul class="ul">
+    <li class="li">home</li>
+     <li class="li">About</li>
+      <li class="li">Contact</li>
+    </ul>
+     <ul class="ul">
+    <li class="li">services</li>
+     <li class="li">feedbacks</li>
+      <li class="li">subscribe me</li>
+    </ul>
+       <ul class="ul">
+    <li class="li">review</li>
+     <li class="li">gallery</li>
+      <li class="li">location</li>
+    </ul>
+    </footer>
+    <div class="copyright">
+    @copyright claim | All Rights Reserved by www.ResumeRocketBuilder.com
+    </div>
+</body>
+</html>
